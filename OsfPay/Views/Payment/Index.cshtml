@@ -1,0 +1,86 @@
+﻿@model PaymentViewModel
+
+        <div class="container">
+            <div class="col-md-6 offset-md-3">
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Selected amount</th>
+                            <th>Product</th>
+                            <th class="text-right">Price</th>
+                            <th class="text-right">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var line in Model.ShoppingCart.ShoppingCartItems)
+                        {
+                            <tr>
+                                <td class="text-center">@line.Amount</td>
+                                <td class="text-left">@line.Product.Name</td>
+                                <td class="text-right">@line.Product.Price.ToString("c")</td>
+                                <td class="text-right">
+                                    @((line.Amount * line.Product.Price).ToString("c"))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right">Total:</td>
+                            <td class="text-right">
+                                @Model.ShoppingCart.GetShoppingCartTotal().ToString("c")
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-body bg-light">
+                 <form method="post">
+                <div asp-validation-summary="All"> </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Payment.CardNumber"></label>
+                    <input asp-for="Payment.CardNumber" class="form-control" />
+                    <span asp-validation-for="Payment.CardNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Payment.Name"></label>
+                    <input asp-for="Payment.Name" class="form-control" />
+                    <span asp-validation-for="Payment.Name"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Payment.LastName"></label>
+                    <input asp-for="Payment.LastName" class="form-control" />
+                    <span asp-validation-for="Payment.LastName"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Payment.ExpritaionDate"></label>
+                    <input asp-for="Payment.ExpritaionDate" class="form-control" />
+                    <span asp-validation-for="Payment.ExpritaionDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Payment.CVV"></label>
+                    <input asp-for="Payment.CVV" class="form-control" />
+                    <span asp-validation-for="Payment.CVV" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="text-center">
+                        <input type="submit" class="btn btn-primary" value="Complete Payment" />
+                    </div>
+                </div>
+                  </form>
+            </div>
+
+        </div>
+
