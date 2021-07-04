@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using OsfPay.Data;
 using OsfPay.Data.Entities;
 using OsfPay.ViewModels;
@@ -18,11 +20,14 @@ namespace OsfPay.Controllers
 
 
 
+
         public PaymentController(IPaymentRepository paymentRepository, ShoppingCart shoppingCart)
         {
             _paymentRepository = paymentRepository;
             _shoppingCart = shoppingCart;
         }
+
+        
         public IActionResult Index()
         {
             var items = _shoppingCart.GetShoppingCartItems();
@@ -47,20 +52,22 @@ namespace OsfPay.Controllers
             return View(paymentView);
         }
 
+       
         [HttpPost]
         public ActionResult Index(PaymentViewModel paymentView)
         {
-
+            string url = HttpContext.Request.Host.ToUriComponent();
+            string scheme = HttpContext.Request.Scheme;
             var items = _shoppingCart.GetShoppingCartItems();
             _shoppingCart.ShoppingCartItems = items;
             paymentView.Payment.PaidAmount = Convert.ToDouble(_shoppingCart.GetShoppingCartTotal());
             using (var client = new HttpClient())
             {
-                
-                client.BaseAddress = new Uri("http://localhost:41085/");
+               
+                client.BaseAddress = new Uri(scheme+"://"+ url);
 
                 //HTTP POST
-                var postTask = client.PostAsJsonAsync("api/PaymentApi", paymentView);
+                var postTask = client.PostAsJsonAsync("/api/PaymentApi", paymentView);
                 postTask.Wait();
 
                 var result = postTask.Result;
